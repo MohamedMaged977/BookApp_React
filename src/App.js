@@ -10,13 +10,7 @@ class BooksApp extends React.Component {
     Books: [],
   };
 
-  /* setCategorizedBooks = (books) => this.setState({ Books: books });
-
-  categorizeBooks = (books) => {
-    this.setCategorizedBooks(books);
-  };
-*/
-  fetchBooks = () => {
+  getBooks = () => {
     BooksAPI.getAll().then((books) => {
       this.setState({ Books: books });
     });
@@ -29,11 +23,7 @@ class BooksApp extends React.Component {
           <Route
             path="/search"
             render={() => (
-              <SearchPage
-                hideSearchPage={this.hideSearchPage}
-                books={this.state.Books}
-                fetchBooks={this.fetchBooks}
-              />
+              <SearchPage books={this.state.Books} getBooks={this.getBooks} />
             )}
           />
 
@@ -41,11 +31,7 @@ class BooksApp extends React.Component {
             exact
             path="/"
             render={() => (
-              <HomePage
-                books={this.state.Books}
-                setBooks={this.setCategorizedBooks}
-                fetchBooks={this.fetchBooks}
-              />
+              <HomePage books={this.state.Books} getBooks={this.getBooks} />
             )}
           />
         </div>

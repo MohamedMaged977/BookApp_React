@@ -9,14 +9,12 @@ const shelfMapper = {
 
 class HomePage extends React.Component {
   componentDidMount() {
-    this.props.fetchBooks();
+    this.props.getBooks();
   }
 
   render() {
     const { books } = this.props;
-    {
-      console.log(books);
-    }
+
     return (
       <div className="app">
         <div className="list-books">
@@ -36,7 +34,7 @@ class HomePage extends React.Component {
                           <Book
                             books={books}
                             book={book}
-                            fetchBooks={this.props.fetchBooks}
+                            getBooks={this.props.getBooks}
                             key={book.id}
                           />
                         ))}

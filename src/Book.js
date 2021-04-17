@@ -12,7 +12,7 @@ const getBookShelf = (books, book) => {
 
 const Book = (props) => {
   const { books, book, getBooks } = props;
-  const { title, subtitle, imageLinks } = book;
+  const { title, authors, imageLinks } = book;
 
   const bookShelf = book.shelf || getBookShelf(books, book);
 
@@ -45,7 +45,7 @@ const Book = (props) => {
         </div>
       </div>
       <div className="book-title">{title}</div>
-      <div className="book-authors">{subtitle}</div>
+      <div className="book-authors">{authors}</div>
     </div>
   );
 };

@@ -20,16 +20,14 @@ class SearchPage extends React.Component {
   }
 
   fetchBooks = (input) => {
-    BooksAPI.search(input)
-      .then((books) => {
-        console.log(books);
-        if (Array.isArray(books)) {
-          this.setState({ searchBooks: books });
-        } else {
-          this.setState({ searchBooks: [] });
-        }
-      })
-      .catch((err) => console.error("error getting books", err));
+    BooksAPI.search(input).then((books) => {
+      console.log(books);
+      if (Array.isArray(books)) {
+        this.setState({ searchBooks: books });
+      } else {
+        this.setState({ searchBooks: [] });
+      }
+    });
   };
 
   updateInput = (event) => this.setState({ input: event.target.value });
@@ -56,7 +54,7 @@ class SearchPage extends React.Component {
               <Book
                 books={books}
                 book={book}
-                fetchBooks={this.props.fetchBooks}
+                getBooks={this.props.getBooks}
                 key={book.id}
               />
             ))}
