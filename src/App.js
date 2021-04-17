@@ -1,74 +1,68 @@
 import React from "react";
-import * as BooksAPI from "./BooksAPI";
 import "./App.css";
-import { Route, Link, BrowserRouter as Router } from "react-router-dom";
-import BookShelf from "./BookShelf";
 import SearchPage from "./SearchPage";
+import HomePage from "./HomePage";
+import * as BooksAPI from "./BooksAPI";
+import { Route, BrowserRouter as Router } from "react-router-dom";
+
 class BooksApp extends React.Component {
   state = {
-    books: [],
-    showSearchPage: false,
+    categorizedBooks: {},
   };
 
-  componentDidMount() {
-    this.refPage();
-  }
-  refPage = () => {
-    BooksAPI.getAll().then((bookss) => {
-      this.setState(() => ({
-        books: bookss,
-      }));
-      console.log(bookss);
+  setCategorizedBooks = (categorizedBooks) =>
+    this.setState({ categorizedBooks });
+
+  categorizeBooks = (books) => {
+    const categorizedBooks = {};
+    books.forEach((book) => {
+      if (categorizedBooks[book.shelf]) {
+        categorizedBooks[book.shelf].push(book);
+      } else {
+        categorizedBooks[book.shelf] = [book];
+      }
     });
+    this.setCategorizedBooks(categorizedBooks);
   };
+
+  fetchBooks = () => {
+    BooksAPI.getAll()
+      .then((books) => {
+        console.log(books);
+        this.categorizeBooks(books);
+      })
+      .catch((err) => console.error("error getting books", err));
+  };
+
   render() {
     return (
-      <div className="app">
-        <Router>
+      <Router>
+        <div>
+          <Route
+            path="/search"
+            render={() => (
+              <SearchPage
+                hideSearchPage={this.hideSearchPage}
+                books={this.state.categorizedBooks}
+                fetchBooks={this.fetchBooks}
+              />
+            )}
+          />
+
           <Route
             exact
             path="/"
             render={() => (
-              <div className="list-books">
-                <div className="list-books-title">
-                  <h1>MyReads</h1>
-                </div>
-                <div className="new">
-                  <BookShelf
-                    books={this.state.books.filter(
-                      (book) => book.shelf === "currentlyReading"
-                    )}
-                    shelf="currentlyReading"
-                    refPage={this.refPage}
-                  />
-                  <BookShelf
-                    books={this.state.books.filter(
-                      (book) => book.shelf === "wantToRead"
-                    )}
-                    shelf="wantToRead"
-                    refPage={this.refPage}
-                  />
-                  <BookShelf
-                    books={this.state.books.filter(
-                      (book) => book.shelf === "read"
-                    )}
-                    shelf="read"
-                    refPage={this.refPage}
-                  />
-                </div>
-                <div className="open-search-pos">
-                  <Link to="/search" className="open-search">
-                    Add
-                  </Link>
-                </div>
-              </div>
+              <HomePage
+                books={this.state.categorizedBooks}
+                setBooks={this.setCategorizedBooks}
+                fetchBooks={this.fetchBooks}
+              />
             )}
           />
-          <Route path="/search" render={() => <SearchPage />} />
-        </Router>
-      </div>
+        </div>
+      </Router>
     );
   }
 }
-
 export default BooksApp;
