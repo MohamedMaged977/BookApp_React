@@ -2,20 +2,16 @@ import React from "react";
 import * as BooksAPI from "./BooksAPI";
 
 const getBookShelf = (books, book) => {
-  let bookInShelf;
-  const shelves = Object.keys(books);
-  for (let i = 0; i < shelves.length; i++) {
-    const shelfBooks = books[shelves[i]];
-    bookInShelf = shelfBooks.find((b) => b.id === book.id);
-    if (bookInShelf) {
-      return bookInShelf.shelf;
-    }
+  const foundBook = books.find((b) => b.id === book.id);
+  if (foundBook) {
+    return foundBook.shelf;
   }
+
   return undefined;
 };
 
 const Book = (props) => {
-  const { books, book, fetchBooks } = props;
+  const { books, book, getBooks } = props;
   const { title, subtitle, imageLinks } = book;
 
   const bookShelf = book.shelf || getBookShelf(books, book);
@@ -35,9 +31,7 @@ const Book = (props) => {
           <select
             value={bookShelf}
             onChange={(event) => {
-              BooksAPI.update(book, event.target.value)
-                .then(fetchBooks)
-                .catch((err) => console.error("error updating book", err));
+              BooksAPI.update(book, event.target.value).then(getBooks);
             }}
           >
             <option value="move" disabled>

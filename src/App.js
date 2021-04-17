@@ -7,31 +7,19 @@ import { Route, BrowserRouter as Router } from "react-router-dom";
 
 class BooksApp extends React.Component {
   state = {
-    categorizedBooks: {},
+    Books: [],
   };
 
-  setCategorizedBooks = (categorizedBooks) =>
-    this.setState({ categorizedBooks });
+  /* setCategorizedBooks = (books) => this.setState({ Books: books });
 
   categorizeBooks = (books) => {
-    const categorizedBooks = {};
-    books.forEach((book) => {
-      if (categorizedBooks[book.shelf]) {
-        categorizedBooks[book.shelf].push(book);
-      } else {
-        categorizedBooks[book.shelf] = [book];
-      }
-    });
-    this.setCategorizedBooks(categorizedBooks);
+    this.setCategorizedBooks(books);
   };
-
+*/
   fetchBooks = () => {
-    BooksAPI.getAll()
-      .then((books) => {
-        console.log(books);
-        this.categorizeBooks(books);
-      })
-      .catch((err) => console.error("error getting books", err));
+    BooksAPI.getAll().then((books) => {
+      this.setState({ Books: books });
+    });
   };
 
   render() {
@@ -43,7 +31,7 @@ class BooksApp extends React.Component {
             render={() => (
               <SearchPage
                 hideSearchPage={this.hideSearchPage}
-                books={this.state.categorizedBooks}
+                books={this.state.Books}
                 fetchBooks={this.fetchBooks}
               />
             )}
@@ -54,7 +42,7 @@ class BooksApp extends React.Component {
             path="/"
             render={() => (
               <HomePage
-                books={this.state.categorizedBooks}
+                books={this.state.Books}
                 setBooks={this.setCategorizedBooks}
                 fetchBooks={this.fetchBooks}
               />
